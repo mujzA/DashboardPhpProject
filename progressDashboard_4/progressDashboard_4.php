@@ -99,7 +99,7 @@ if ($result_completed->num_rows > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="cc.css">
+    <link rel="stylesheet" type="text/css" href="progressDashboard_4.css">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
   
 </head>
