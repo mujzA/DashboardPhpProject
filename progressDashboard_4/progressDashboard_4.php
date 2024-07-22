@@ -1,3 +1,101 @@
+
+
+
+<?php
+include './dbConnection.php';
+include './fetchKPIs.php';
+
+//    $host="localhost";
+//    $user="root";
+//    $password="";
+//    $dbNAME="sdaia_academy_dashboarddb";
+   
+//    $con= mysqli_connect($host,$user,$password,$dbNAME);
+
+//this code show active and inactive SELECT `activity`, COUNT(*) AS user_count FROM `Learner` WHERE `Domain` = 'Defense' GROUP BY `activity`;
+// for active users
+//SELECT COUNT(*) AS active_defense_user_count FROM `Learner` WHERE `Domain` = 'Defense' AND `activity` = 'active';
+// show all active in database SELECT COUNT(*) AS active_users FROM Learner WHERE activity = 'active';
+
+//    $res3 = mysqli_query($con, "SELECT COUNT(*) AS active_users FROM `Learner` WHERE `Domain` = 'Defense' AND `activity` = 'active';");
+//    $row3 = mysqli_fetch_assoc($res3);
+//    $activeUsersCount = $row3['active_users'];
+
+   // for learner registration
+   //SELECT COUNT(*) AS defense_user_count FROM learner WHERE Domain = 'Defense';
+   //SELECT COUNT(*) AS total_users FROM Learner;
+//    $res4 = mysqli_query($con, "SELECT COUNT(*) AS total_users FROM learner WHERE Domain = 'Defense'");
+//    $row4 = mysqli_fetch_assoc($res4);
+//    $total_users = $row4['total_users'];
+
+//for enrolled 
+//    $res5 = mysqli_query($con, "SELECT COUNT(DISTINCT Course.user_id) AS total_enrolled
+//                              FROM Course
+//                              JOIN Learner ON Course.user_id = Learner.user_id
+//                              WHERE Learner.Domain = 'Defense'");
+// $row5 = mysqli_fetch_assoc($res5);
+// $totalEnrolled = $row5['total_enrolled'];
+
+
+//for certificate
+// $res6 = mysqli_query($con, "SELECT COUNT(*) AS Certificates FROM `Learner` l JOIN `Course` c ON l.user_id = c.user_id WHERE l.Domain = 'Defense' AND c.status = 'completed';");
+// $row6 = mysqli_fetch_assoc($res6);
+// $Certificates = $row6['Certificates'];
+
+
+//For table city
+   $res = mysqli_query($conn, "SELECT city, COUNT(*) AS count FROM learner GROUP BY city ORDER BY count DESC;");
+
+// for table Defense sector 
+   $res2 = mysqli_query($conn, " SELECT subdomain, COUNT(*) AS subdomain_count FROM Learner WHERE Domain = 'Defense' GROUP BY subdomain ORDER BY subdomain_count DESC;");
+
+
+   
+
+
+// Query to get the enrolled count per month for Defense domain
+$sql_enrolled = "SELECT MONTH(Course.enrolment_date) AS month, COUNT(Course.user_id) AS enrolled_count
+                 FROM Course
+                 JOIN Learner ON Course.user_id = Learner.user_id
+                 WHERE Learner.Domain = 'Defense'
+                 GROUP BY MONTH(Course.enrolment_date)";
+
+// $result_enrolled = mysqli_query($con, $sql_enrolled);
+$result_enrolled = $conn->query($sql_enrolled);
+
+$enrolledData = array_fill(0, 12, 0); // Initialize an array with 12 zeros
+
+if ($result_enrolled->num_rows > 0) {
+    while($row_enrolled = $result_enrolled->fetch_assoc()) {
+        $enrolledData[$row_enrolled['month'] - 1] = $row_enrolled['enrolled_count'];
+    }
+}
+
+// Query to get the completed count per month for Defense domain
+$sql_completed = "SELECT MONTH(Course.completion_date) AS month, COUNT(Course.user_id) AS completed_count
+                  FROM Course
+                  JOIN Learner ON Course.user_id = Learner.user_id
+                  WHERE Learner.Domain = 'Defense'
+                  GROUP BY MONTH(Course.completion_date)";
+
+// $result_completed = mysqli_query($con, $sql_completed);
+$result_completed = $conn->query($sql_completed);
+
+$completionData = array_fill(0, 12, 0); // Initialize an array with 12 zeros
+
+if ($result_completed->num_rows > 0) {
+    while($row_completed = $result_completed->fetch_assoc()) {
+        $completionData[$row_completed['month'] - 1] = $row_completed['completed_count'];
+    }
+}
+
+  
+  ?>
+
+
+
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +105,14 @@
 </head>
 
 <body>
+
+
+
+  
+ 
+
     <div class="AimsRegistrationDashboard">
+        <!-- Existing content -->
     </div>
 
     <div class="Group1171278554">
@@ -32,7 +137,7 @@
                 <div class="text-container">
                     <div class="box-content">
                         <span class="big">Learners Registered</span>
-                        <div class="number">156,821</div>
+                        <div class="number"> <?php echo number_format($kpi_data_LR['user_id']); ?></div>
                     </div>
                 </div>
             </div>
@@ -56,7 +161,7 @@
                 <div class="text-container">
                     <div class="box-content">
                         <span class="big">Learners Enrolled</span>
-                        <div class="number">116,456</div>
+                        <div class="number"><?php echo number_format($kpi_data_Enrolled['user_id']); ?> </div>
                     </div>
                 </div>
             </div>
@@ -81,7 +186,7 @@
                 <div class="text-container">
                     <div class="box-content">
                         <span class="big">Certificates Issued</span>
-                        <div class="number">106,450</div>
+                        <div class="number"><?php echo number_format($kpi_data_CI['status']); ?></div>
                     </div>
                 </div>
             </div>
@@ -104,7 +209,7 @@
                 <div class="text-container">
                     <div class="box-content">
                         <span class="big">Learners Active</span>
-                        <div class="number">16,021</div>
+                        <div class="number"><?php echo number_format($kpi_data_AL['active_count']); ?></div>
                     </div>
                 </div>
             </div>
@@ -128,7 +233,7 @@
                 <div class="text-container">
                     <div class="box-content">
                         <span class="big">Avg Time</span>
-                        <div class="number">13 h 22 m</div>
+                        <div class="number"><?php echo number_format($KPI_data_avg['average_usage_hours']); ?></div>
                     </div>
                 </div>
 
@@ -157,73 +262,33 @@
                 <th>Sector</th>
                 <th></th>
             </tr>
-            <tr>
-                <td>Air Force</td>
-                <td>53,000</td>
-            </tr>
-            <tr>
-                <td>Navy</td>
-                <td>51,000</td>
-            </tr>
-            <tr>
-                <td>Army</td>
-                <td>20,000</td>
-            </tr>
-            <tr>
-                <td>Police</td>
-                <td>10,000</td>
-            </tr>
-            <tr>
-                <td>Marines</td>
-                <td>15,000</td>
-            </tr>
-            <tr>
-                <td>Coast Guard</td>
-                <td>8,000</td>
-            </tr>
-            <tr>
-                <td>Space Force</td>
-                <td>5,000</td>
-            </tr>
+            <?php
+while ($row = mysqli_fetch_assoc($res2)){
+    echo "<tr>";
+    echo "<td>" . $row['subdomain']. "</td>";
+    echo "<td>" . $row['subdomain_count']. "</td>";
+    echo "</tr>";
+}
+?>
+     
                     <!-- Add more rows here as needed -->
                 </table>
             </div>
-
-            <div class="scroll-pane dashboard-item"  style="width: 550px;height:300px; ">
+            <div class="scroll-pane dashboard-item"  style="width: 550px;height: 350px;">
                 <table>
                     <caption>City Wise Distribution</caption>
                     <tr>
                 <th>City</th>
                 <th></th>
-            </tr>
-            <tr>
-                <td>Riyadh</td>
-                <td>53,000</td>
-            </tr>
-            <tr>
-                <td>Jeddah</td>
-                <td>51,000</td>
-            </tr>
-            <tr>
-                <td>Dammam</td>
-                <td>20,000</td>
-            </tr>
-            <tr>
-                <td>Makkah</td>
-                <td>10,000</td>
-            </tr>
-            <tr>
-                <td>Madina</td>
-                <td>15,000</td>
-            </tr>
-            <tr>
-                <td>tabuk</td>
-                <td>8,000</td>
-            </tr>
-            <tr>
-                <td>Taif</td>
-                <td>5,000</td>
-            </tr>
+                   </tr>
+                   <?php
+while ($row = mysqli_fetch_assoc($res)){
+    echo "<tr>";
+    echo "<td>" . $row['city']. "</td>";
+    echo "<td>" . $row['count']. "</td>";
+    echo "</tr>";
+}
+?>
                     <!-- Add more rows here as needed -->
                 </table>
             </div>
@@ -235,8 +300,73 @@
     </div>
 
     </div>
-   
 
-    <script src="progressDashboard_4.js"></script>
+
+
+   
+    <script type="text/javascript">
+        var enrolledData = <?php echo json_encode($enrolledData); ?>;
+        var completionData = <?php echo json_encode($completionData); ?>;
+
+        // Initialize the echarts instance based on the prepared dom
+        var HRChart = echarts.init(document.getElementById('HR Enrolled V/s Completion'));
+
+        // Specify the configuration items and data for the chart
+        var HROption = {
+            title: {
+                text: 'Defense Enrolled vs Completion',
+                subtext: '',
+                textStyle: {
+                    fontSize: 16,
+                    fontWeight: 'bold'
+                }
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['Enrolled', 'Completion']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    dataView: { show: true, readOnly: false },
+                    magicType: { show: true, type: ['line', 'bar'] },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                }
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: 'Enrolled',
+                    type: 'bar',
+                    color: '#6169F3',
+                    data: enrolledData
+                },
+                {
+                    name: 'Completion',
+                    type: 'bar',
+                    color: '#FD8D35',
+                    data: completionData
+                }
+            ]
+        };
+
+        // Display the chart using the configuration items and data just specified.
+        HRChart.setOption(HROption);
+    </script>
 
 </body>
+</html>
