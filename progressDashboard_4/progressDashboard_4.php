@@ -5,42 +5,7 @@
 include './dbConnection.php';
 include './fetchKPIs.php';
 
-//    $host="localhost";
-//    $user="root";
-//    $password="";
-//    $dbNAME="sdaia_academy_dashboarddb";
-   
-//    $con= mysqli_connect($host,$user,$password,$dbNAME);
 
-//this code show active and inactive SELECT `activity`, COUNT(*) AS user_count FROM `Learner` WHERE `Domain` = 'Defense' GROUP BY `activity`;
-// for active users
-//SELECT COUNT(*) AS active_defense_user_count FROM `Learner` WHERE `Domain` = 'Defense' AND `activity` = 'active';
-// show all active in database SELECT COUNT(*) AS active_users FROM Learner WHERE activity = 'active';
-
-//    $res3 = mysqli_query($con, "SELECT COUNT(*) AS active_users FROM `Learner` WHERE `Domain` = 'Defense' AND `activity` = 'active';");
-//    $row3 = mysqli_fetch_assoc($res3);
-//    $activeUsersCount = $row3['active_users'];
-
-   // for learner registration
-   //SELECT COUNT(*) AS defense_user_count FROM learner WHERE Domain = 'Defense';
-   //SELECT COUNT(*) AS total_users FROM Learner;
-//    $res4 = mysqli_query($con, "SELECT COUNT(*) AS total_users FROM learner WHERE Domain = 'Defense'");
-//    $row4 = mysqli_fetch_assoc($res4);
-//    $total_users = $row4['total_users'];
-
-//for enrolled 
-//    $res5 = mysqli_query($con, "SELECT COUNT(DISTINCT Course.user_id) AS total_enrolled
-//                              FROM Course
-//                              JOIN Learner ON Course.user_id = Learner.user_id
-//                              WHERE Learner.Domain = 'Defense'");
-// $row5 = mysqli_fetch_assoc($res5);
-// $totalEnrolled = $row5['total_enrolled'];
-
-
-//for certificate
-// $res6 = mysqli_query($con, "SELECT COUNT(*) AS Certificates FROM `Learner` l JOIN `Course` c ON l.user_id = c.user_id WHERE l.Domain = 'Defense' AND c.status = 'completed';");
-// $row6 = mysqli_fetch_assoc($res6);
-// $Certificates = $row6['Certificates'];
 
 
 //For table city
